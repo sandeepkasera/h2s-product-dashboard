@@ -1,23 +1,24 @@
-import logo from './logo.svg';
 import './App.css';
+import { useState } from "react";
+import { generateMockProducts } from "./utils/mockData";
+import Header from "./components/Header";
+import { CartProvider } from './utils/cartContext';
 
 function App() {
+  const [products] = useState(generateMockProducts(1000));
+
   return (
     <div className="App">
+      <CartProvider>
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+       
+        <Header />
       </header>
+      <main>
+        <h1 className="text-2xl font-bold">Product Dashboard</h1>
+        <p>Total Products: {products.length}</p>
+      </main>
+       </CartProvider>
     </div>
   );
 }
