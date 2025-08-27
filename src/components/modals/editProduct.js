@@ -1,4 +1,4 @@
-import { useStateseEffect } from "react";
+import { useState } from "react";
 
 export default function EditProduct({ product, onClose, onSave }) {
   const [form, setForm] = useState({ ...product });
