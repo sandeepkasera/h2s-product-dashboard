@@ -1,5 +1,4 @@
 import { useState } from "react";
-// import { Filter } from "lucide-react"; // optional icon
 
 export default function SidebarFilters({ filters, setFilters, categories }) {
   const [open, setOpen] = useState(false);
@@ -28,10 +27,9 @@ export default function SidebarFilters({ filters, setFilters, categories }) {
       <div className="md:hidden flex justify-end mb-4">
         <button
           onClick={() => setOpen((o) => !o)}
-          className="bg-blue-500 text-white px-4 py-2 rounded flex items-center gap-2"
+          className="bg-white shadow-lg px-4 py-2 rounded flex items-center gap-2"
         >
-          {/* <Filter size={18} /> Filters */}
-          FI
+          <h2 className="text-lg font-bold">Filters</h2>
         </button>
       </div>
 
