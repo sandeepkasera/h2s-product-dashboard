@@ -14,7 +14,7 @@ function Layout() {
         <Header onSearch={setSearch}  />
  
         {/* Dynamic Route Content */}
-        <main className="p-6">
+        <main className="p-3">
             <Outlet context={{ search }} />
         </main>
       </div>

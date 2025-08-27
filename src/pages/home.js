@@ -3,7 +3,10 @@ import { useState, useEffect } from "react";
 import { useCart } from "../utils/cartContext";
 import { generateMockProducts } from "../utils/mockData";
 import Pagination from "../utils/pagination";
-import SidebarFilters from "../components/sideBar"; // 👈 import sidebar
+import SidebarFilters from "../components/sideBar";
+import ProductImage from "../components/blurSkeleton";
+import {useDebounce} from "../utils/useDebounce";
+
 
 export default function Home() {
   const outletContext = useOutletContext() || {};
@@ -14,42 +17,41 @@ export default function Home() {
   const [products] = useState(generateMockProducts(1000));
   const [filtered, setFiltered] = useState(products);
 
-  // 🔹 Filters state
+  // ✅ Debounce search value  
+  const debouncedSearch = useDebounce(search, 400);
+
+  // Filters
   const [filters, setFilters] = useState({
     sort: "",
     categories: new Set(),
     status: new Set(),
   });
 
-  // 🔹 Pagination
+  // Pagination
   const [page, setPage] = useState(1);
   const pageSize = 10;
 
   // Unique categories
   const categories = [...new Set(products.map((p) => p.category))];
 
-  // ✅ Search + Filters + Sort
   useEffect(() => {
     let data = [...products];
 
-    // Search
-    if (search) {
+    // ✅ Use debounced search
+    if (debouncedSearch) {        
       data = data.filter((p) =>
-        p.name.toLowerCase().includes(search.toLowerCase())
+        p.name.toLowerCase().includes(debouncedSearch.toLowerCase())
       );
     }
 
-    // Category filter
     if (filters.categories.size > 0) {
       data = data.filter((p) => filters.categories.has(p.category));
     }
 
-    // Status filter
     if (filters.status.size > 0) {
       data = data.filter((p) => filters.status.has(p.status));
     }
 
-    // Sort
     switch (filters.sort) {
       case "price-asc":
         data.sort((a, b) => a.price - b.price);
@@ -68,8 +70,9 @@ export default function Home() {
     }
 
     setFiltered(data);
-    setPage(1); // reset pagination on filter change
-  }, [search, filters, products]);
+    setPage(1);
+  }, [debouncedSearch, filters, products]);  // ✅ depends on debouncedSearch
+
 
   // ✅ Paginate
   const start = (page - 1) * pageSize;
@@ -92,7 +95,7 @@ export default function Home() {
       </div>
 
       {/* Main Content */}
-      <main className="flex-1 p-6">
+      <main className="flex-1">
         {/* 🔹 Mobile Filter Button */}
         <div className="md:hidden mb-4">
           <SidebarFilters
@@ -102,10 +105,10 @@ export default function Home() {
           />
         </div>
 
-        <h1 className="text-2xl font-bold mb-4">Our Products</h1>
+        <h1 className="text-2xl font-bold mb-2 mt-2">Our Products</h1>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {currentPageItems.map((p) => {
             const qty = getQty(p.id);
             return (
@@ -113,11 +116,12 @@ export default function Home() {
                 key={p.id}
                 className="bg-white shadow rounded-lg p-4 hover:shadow-lg transition flex flex-col"
               >
-                <img
+                {/* <img
                   src={p.image}
                   alt={p.name}
                   className="w-full h-40 object-cover rounded-md mb-3"
-                />
+                /> */}
+                <ProductImage src={p.image} alt={p.name} />
                 <h2 className="font-semibold text-lg">{p.name}</h2>
                 <p className="text-sm text-gray-500">{p.category}</p>
                 <p className="mt-2 font-bold">₹{p.price}</p>

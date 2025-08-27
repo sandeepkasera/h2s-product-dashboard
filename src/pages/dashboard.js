@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import { useCart } from "../utils/cartContext";
 import { generateMockProducts } from "../utils/mockData";
 
 export default function DashboardLayout() {
-  const [products] = useState(generateMockProducts(200)); // demo 200 products
-  const { count } = useCart();
+  const [products] = useState(generateMockProducts(1000)); // demo 200 products
 
   // 🔹 Stats
   const totalProducts = products.length;
@@ -17,37 +15,6 @@ export default function DashboardLayout() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* 🔹 Header */}
-      <header className="bg-white shadow p-4 flex justify-between items-center sticky top-0 z-10">
-        {/* Left */}
-        <div className="flex items-center gap-4">
-          <h1 className="text-xl font-bold">📊 Product Dashboard</h1>
-          <input
-            type="text"
-            placeholder="Search..."
-            className="border rounded px-3 py-2 w-64 hidden sm:block"
-          />
-        </div>
-
-        {/* Right */}
-        <div className="flex items-center gap-6">
-          {/* Cart Badge */}
-          <div className="relative">
-            <span className="material-icons">shopping_cart</span>
-            {count > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1 rounded-full">
-                {count}
-              </span>
-            )}
-          </div>
-          {/* Avatar */}
-          <img
-            src="https://i.pravatar.cc/40"
-            alt="user"
-            className="w-10 h-10 rounded-full"
-          />
-        </div>
-      </header>
 
       {/* 🔹 Stats Section */}
       <main className="p-6 flex-1">

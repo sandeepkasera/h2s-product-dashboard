@@ -45,6 +45,13 @@ export default function Header({ onSearch, onOpenCart }) {
                             </span>
                         )}
                     </button>
+                    <button
+                        onClick={() => navigate("/dashboard")}
+                        className="relative rounded-xl border px-3 py-2 text-sm hover:bg-gray-50"
+                        aria-label="Open admin dashboard"
+                    >
+                       Admin Dashboard
+                    </button>
 
                     {/* Avatar */}
                     <div className="h-8 w-8 overflow-hidden rounded-full">
