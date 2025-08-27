@@ -1,115 +1,90 @@
-import { useOutletContext } from "react-router-dom";
-import { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useCart } from "../utils/cartContext";
 import { generateMockProducts } from "../utils/mockData";
-import Pagination from "../utils/pagination";
 
-export default function Dashboard() {
-     const outletContext = useOutletContext() || {};
-    const { search = "" } = outletContext;
- 
-    const { state, api } = useCart();
+export default function DashboardLayout() {
+  const [products] = useState(generateMockProducts(200)); // demo 200 products
+  const { count } = useCart();
 
-    const [products] = useState(generateMockProducts(1000));
-    const [filtered, setFiltered] = useState(products);
+  // 🔹 Stats
+  const totalProducts = products.length;
+  const totalRevenue = products.reduce(
+    (sum, p) => sum + Number(p.price) * (p.stock / 2), // fake revenue
+    0
+  );
+  const lowStock = products.filter((p) => p.stock < 10).length;
+  const categoriesCount = new Set(products.map((p) => p.category)).size;
 
-    // 🔹 Pagination state
-  const [page, setPage] = useState(1);
-  const pageSize = 10; // items per page
-
-   useEffect(() => {
-        if (!search) {
-            setFiltered(products);
-        } else {
-            setFiltered(
-                products.filter((p) =>
-                    p.name.toLowerCase().includes(search.toLowerCase())
-                )
-            );
-        }
-    }, [search, products]);
-
-
-
-
-
-    // ✅ Paginated data
-    const start = (page - 1) * pageSize;
-    const end = start + pageSize;
-    const currentPageItems = filtered.slice(start, end);
-
-    // ✅ Total pages
-    const totalPages = Math.ceil(filtered.length / pageSize);
-
-    // Get quantity for a product from cart
-    const getQty = (id) => state.items.get(id)?.qty || 0;
-
-    return (
-        <div>
-            <h1 className="text-2xl font-bold mb-4">📊 Dashboard</h1>
-
-            {/* Grid of Product Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {currentPageItems.map((p) => {
-                    const qty = getQty(p.id);
-
-                    return (
-                        <div
-                            key={p.id}
-                            className="bg-white shadow rounded-lg p-4 hover:shadow-lg transition flex flex-col"
-                        >
-                            <img
-                                src={p.image}
-                                alt={p.name}
-                                className="w-full h-40 object-cover rounded-md mb-3"
-                            />
-                            <h2 className="font-semibold text-lg">{p.name}</h2>
-                            <p className="text-sm text-gray-500">{p.category}</p>
-                            <p className="mt-2 font-bold">&#8377;{p.price}</p>
-                            <div className="flex justify-between items-center mt-2 text-sm mb-3">
-                                <span
-                                    className={`px-2 py-1 rounded ${p.status === "Active"
-                                        ? "bg-green-100 text-green-600"
-                                        : "bg-red-100 text-red-600"
-                                        }`}
-                                >
-                                    {p.status}
-                                </span>
-                                <span className="text-gray-600">Stock: {p.stock}</span>
-                            </div>
-
-                            {/* Quantity Controls */}
-                            <div className="mt-auto flex items-center justify-between gap-2">
-                                <button
-                                    onClick={() => api.dec(p.id)}
-                                    disabled={qty <= 0}
-                                    className="bg-gray-200 px-3 py-1 rounded disabled:opacity-50"
-                                >
-                                    -
-                                </button>
-
-                                <span>{qty}</span>
-
-                                <button
-                                    onClick={() => {
-                                        if (qty === 0) api.add(p);
-                                        else if (qty < p.stock) api.inc(p.id);
-                                    }}
-                                    disabled={qty >= p.stock}
-                                    className="bg-blue-500 text-white px-3 py-1 rounded disabled:opacity-50"
-                                >
-                                    +
-                                </button>
-                            </div>
-                        </div>
-                    );
-                })}
-            </div>
-
-            {/* Pagination Controls */}
-            <Pagination page={page} setPage={setPage} totalPages={totalPages} />
-
-
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* 🔹 Header */}
+      <header className="bg-white shadow p-4 flex justify-between items-center sticky top-0 z-10">
+        {/* Left */}
+        <div className="flex items-center gap-4">
+          <h1 className="text-xl font-bold">📊 Product Dashboard</h1>
+          <input
+            type="text"
+            placeholder="Search..."
+            className="border rounded px-3 py-2 w-64 hidden sm:block"
+          />
         </div>
-    );
+
+        {/* Right */}
+        <div className="flex items-center gap-6">
+          {/* Cart Badge */}
+          <div className="relative">
+            <span className="material-icons">shopping_cart</span>
+            {count > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1 rounded-full">
+                {count}
+              </span>
+            )}
+          </div>
+          {/* Avatar */}
+          <img
+            src="https://i.pravatar.cc/40"
+            alt="user"
+            className="w-10 h-10 rounded-full"
+          />
+        </div>
+      </header>
+
+      {/* 🔹 Stats Section */}
+      <main className="p-6 flex-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          {/* Total Products */}
+          <div className="bg-white p-6 rounded-2xl shadow flex flex-col">
+            <h2 className="text-gray-500 text-sm">Total Products</h2>
+            <p className="text-2xl font-bold">{totalProducts}</p>
+          </div>
+
+          {/* Total Revenue */}
+          <div className="bg-white p-6 rounded-2xl shadow flex flex-col">
+            <h2 className="text-gray-500 text-sm">Total Revenue</h2>
+            <p className="text-2xl font-bold">₹{totalRevenue.toFixed(0)}</p>
+          </div>
+
+          {/* Low Stock Items */}
+          <div className="bg-white p-6 rounded-2xl shadow flex flex-col">
+            <h2 className="text-gray-500 text-sm">Low Stock Items</h2>
+            <p className="text-2xl font-bold">{lowStock}</p>
+          </div>
+
+          {/* Categories Count */}
+          <div className="bg-white p-6 rounded-2xl shadow flex flex-col">
+            <h2 className="text-gray-500 text-sm">Categories</h2>
+            <p className="text-2xl font-bold">{categoriesCount}</p>
+          </div>
+        </div>
+
+        {/* Placeholder for other sections (Table / Grid etc.) */}
+        <div className="bg-white p-6 rounded-2xl shadow">
+          <h2 className="text-lg font-bold mb-2">Welcome back 👋</h2>
+          <p className="text-gray-600">
+            Use the navigation to view Products, Cart, and Analytics.
+          </p>
+        </div>
+      </main>
+    </div>
+  );
 }
