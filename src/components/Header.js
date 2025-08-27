@@ -50,7 +50,7 @@ export default function Header({ onSearch, onOpenCart }) {
                         className="relative rounded-xl border px-3 py-2 text-sm hover:bg-gray-50"
                         aria-label="Open admin dashboard"
                     >
-                       Admin Dashboard
+                        Dashboard
                     </button>
 
                     {/* Avatar */}

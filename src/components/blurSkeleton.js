@@ -4,9 +4,9 @@ export default function ProductImage({ src, alt }) {
   const [loaded, setLoaded] = useState(false);
 
   return (
-    <div className="w-full h-40 bg-gray-200 rounded-md mb-3 relative overflow-hidden">
+    <div className="w-16 h-16 bg-gray-100 rounded-md relative overflow-hidden">
       {!loaded && (
-        <div className="absolute inset-0 animate-pulse bg-gray-300" />
+        <div className="absolute inset-0 animate-pulse bg-gray-200" />
       )}
       <img
         src={src}

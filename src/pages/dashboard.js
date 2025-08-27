@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import { generateMockProducts } from "../utils/mockData";
+import React from "react";
+import { useProducts } from "../utils/productContext";
 
 export default function DashboardLayout() {
-  const [products] = useState(generateMockProducts(1000)); // demo 200 products
+  const { products } = useProducts(); // ✅ get products from context
 
   // 🔹 Stats
   const totalProducts = products.length;
   const totalRevenue = products.reduce(
-    (sum, p) => sum + Number(p.price) * (p.stock / 2), // fake revenue
+    (sum, p) => sum + Number(p.price) * (p.stock / 2), // fake revenue calc
     0
   );
   const lowStock = products.filter((p) => p.stock < 10).length;
@@ -15,7 +15,6 @@ export default function DashboardLayout() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-
       {/* 🔹 Stats Section */}
       <main className="p-6 flex-1">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
