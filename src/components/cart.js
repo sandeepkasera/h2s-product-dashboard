@@ -4,21 +4,19 @@ export default function CartSidebar({ isOpen, onClose }) {
   const { state, api, total, count } = useCart();
   const items = [...state.items.values()]; // Map → array
 
+  if (!isOpen) return null; // ✅ Sidebar will not be rendered at all unless open
+
   return (
     <>
       {/* Overlay */}
       <div
-        className={`fixed inset-0 bg-black/40 transition-opacity duration-300 ${
-          isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        }`}
+        className="fixed inset-0 bg-black/40 transition-opacity duration-300 opacity-100 pointer-events-auto z-40"
         onClick={onClose}
       />
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 right-0 h-screen w-96 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        } flex flex-col`}
+        className="fixed top-0 right-0 h-screen w-96 bg-white shadow-lg z-50 transform translate-x-0 transition-transform duration-300 ease-in-out flex flex-col"
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b">

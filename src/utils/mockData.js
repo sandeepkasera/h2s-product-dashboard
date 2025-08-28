@@ -1,12 +1,13 @@
 export const generateMockProducts = (count = 1000) => {
-  const categories = ["Electronics", "Clothing", "Books", "Home", "Sports"];
+  const categories = ["Clothing", "Books", "Home", "Sports", "Toys"];
+  const name = {"Clothing": "Shirt", "Books": "Book", "Home": "Lamp", "Sports": "Ball", "Toys": "Puzzle"};
   const products = [];
 
   for (let i = 1; i <= count; i++) {
     const category = categories[Math.floor(Math.random() * categories.length)];
     products.push({
       id: i,
-      name: `Product ${i}`,
+      name: `${name[category]}`,
       category,
       price: (Math.random() * 500).toFixed(2),
       stock: Math.floor(Math.random() * 100),
