@@ -34,48 +34,76 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
+---
 
 ## ✨ Feature Overview
 
-# Add to Cart
-Add to cart button per product
-Header cart badge with live count
-cart with quantity controls, remove, and total price
-In-memory cart using React Context API
+### 🛒 Add to Cart
+- Add to cart button per product  
+- Header cart badge with live count  
+- Cart sidebar with quantity controls, remove, and total price  
+- In-memory cart using **React Context API**
 
-# Product Table
-Columns: Image, Name, Category, Price, Status, Stock, Cart, Actions
-Features:
-Pagination (10 per page)
-Debounced search (filters product list)
-Sortable columns
-Row actions: View, Edit, Delete
-Handles 1000+ product dataset
-    Drag & Drop Columns
-    Reorder table headers via drag and drop
-    State updated to persist new order
+### 📊 Product Table
+- Columns: Image, Name, Category, Price, Status, Stock, Cart, Actions  
+- Features:  
+  - Pagination (10 per page)  
+  - Debounced search (filters product list)  
+  - Sortable columns  
+  - Row actions: **View**, **Edit**, **Delete**  
+  - Handles 1000+ product dataset  
 
+### 📑 Drag & Drop Columns
+- Reorder table headers via drag and drop  
+- State updated to persist new order  
 
-# Dashboard View
-Header with search, user avatar, cart badge
-Stats cards: total products, revenue, low stock, categories
-Responsive mobile-first design:
+### 🪟 Lazy Loaded Modals
+- **ViewProduct**, **EditProduct**, **DeleteConfirm** modals are lazy-loaded with `React.lazy` + `Suspense`  
+- Improves initial load performance since modal code is only fetched when needed  
 
-Mobile → Product cards view
-Desktop → Product table view
+### 📈 Dashboard View
+- Header with search, user avatar, cart badge  
+- Stats cards: total products, revenue, low stock, categories  
+- Responsive **mobile-first** design:  
+  - **Mobile** → Product cards view  
+  - **Desktop** → Product table view  
 
-# Optimizations
-Debounced search → prevents excessive re-renders while typing
-Memoized cart context → optimized with useReducer + useMemo
-Reduced re-renders → applied useMemo/useCallback on derived values (cart totals, filtered products)
-Lazy image loading → all product images use loading="lazy"
-Efficient pagination → memory-efficient slicing (10 items/page) for large dataset
+---
 
-# ⏱️Time Tracking
+## ⚡ Optimizations
+- **Debounced search** → prevents excessive re-renders while typing  
+- **Memoized cart context** → optimized with `useReducer` + `useMemo`  
+- **Reduced re-renders** → applied `useMemo` / `useCallback` on derived values (cart totals, filtered products)  
+- **Lazy image loading** → all product images use `loading="lazy"`  
+- **Efficient pagination** → memory-efficient slicing (10 items/page) for large dataset  
+- **Lazy loaded modals** → `React.lazy` ensures modals don’t impact initial bundle size  
 
-Project setup: ~1 hr
-Add to Cart (context + sidebar): ~2 hrs
-Product Table (search, sort, pagination): ~3 hrs
-Drag & Drop column headers: ~2 hrs
-Responsive layout (mobile cards + desktop table): ~2 hrs
-Polishing (UI/UX, bug fixes, optimizations): ~2 hrs
+---
+
+## ⏱️ Time Tracking
+- Project setup: ~1 hr  
+- Add to Cart (context + sidebar): ~2 hrs  
+- Product Table (search, sort, pagination): ~3 hrs  
+- Drag & Drop column headers: ~2 hrs  
+- Responsive layout (mobile cards + desktop table): ~2 hrs  
+- Polishing (UI/UX, bug fixes, optimizations): ~2 hrs  
+
+---
+
+## 🧩 Challenges & Solutions
+
+### 🔹 Drag & Drop Columns
+**Challenge:**  
+While implementing drag-and-drop for the product table headers, two key problems appeared:
+1. Keeping **column headers and row cells aligned** after reordering.  
+2. Avoiding **unnecessary re-renders of 1000+ rows** when only header order changed.  
+3. Managing **interaction between sorting and drag events** so they didn’t conflict.  
+
+**Solution:**  
+- Created a `columns` array in state to represent the current order of headers.  
+- Implemented `onDragStart`, `onDragOver`, and `onDrop` to reorder immutably:
+  ```js
+  const reordered = [...columns];
+  const [removed] = reordered.splice(draggedColIndex, 1);
+  reordered.splice(index, 0, removed);
+  setColumns(reordered);

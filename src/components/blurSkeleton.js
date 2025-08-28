@@ -12,6 +12,7 @@ export default function ProductImage({ src, alt }) {
         src={src}
         alt={alt}
         onLoad={() => setLoaded(true)}
+        loading="lazy"
         className={`w-full h-full object-cover rounded-md transition-opacity duration-500 ${
           loaded ? "opacity-100" : "opacity-0"
         }`}
