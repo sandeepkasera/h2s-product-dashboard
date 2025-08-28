@@ -1,13 +1,14 @@
 import { useOutletContext } from "react-router-dom";
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { useCart } from "../utils/cartContext";
 import { useProducts } from "../utils/productContext";
 import ProductTable from "../components/productTable";
-
 import Modal from "../components/modals/Modal";
-import ViewProduct from "../components/modals/viewProducts";
-import EditProduct from "../components/modals/editProduct";
-import DeleteConfirm from "../components/modals/deleteProduct";
+
+// Lazy load modals
+const ViewProduct = lazy(() => import("../components/modals/viewProducts"));
+const EditProduct = lazy(() => import("../components/modals/editProduct"));
+const DeleteConfirm = lazy(() => import("../components/modals/deleteProduct"));
 
 export default function Home() {
   const outletContext = useOutletContext() || {};
@@ -40,40 +41,49 @@ export default function Home() {
 
       {/* View Modal */}
       {viewingProduct && (
-        <Modal isOpen={!!viewingProduct} onClose={() => setViewingProduct(null)}>
-          <ViewProduct product={viewingProduct} onClose={() => setViewingProduct(null)} />
+        <Modal isOpen onClose={() => setViewingProduct(null)}>
+          <Suspense fallback={<div className="p-6">Loading...</div>}>
+            <ViewProduct
+              product={viewingProduct}
+              onClose={() => setViewingProduct(null)}
+            />
+          </Suspense>
         </Modal>
       )}
 
       {/* Edit Modal */}
       {editingProduct && (
-        <Modal isOpen={!!editingProduct} onClose={() => setEditingProduct(null)}>
-          <EditProduct
-            product={editingProduct}
-            onClose={() => setEditingProduct(null)}
-            onSave={(form) => {
-              updateProduct(form.id, form);
-              setEditingProduct(null);
-            }}
-          />
+        <Modal isOpen onClose={() => setEditingProduct(null)}>
+          <Suspense fallback={<div className="p-6">Loading...</div>}>
+            <EditProduct
+              product={editingProduct}
+              onClose={() => setEditingProduct(null)}
+              onSave={(form) => {
+                updateProduct(form.id, form);
+                setEditingProduct(null);
+              }}
+            />
+          </Suspense>
         </Modal>
       )}
 
       {/* Delete Modal */}
       {deletingProduct && (
-        <Modal isOpen={!!deletingProduct} onClose={() => setDeletingProduct(null)}>
-          <DeleteConfirm
-            product={deletingProduct}
-            onCancel={() => setDeletingProduct(null)}
-            onDeleteProduct={(id) => {
-              deleteProduct(id);
-              setDeletingProduct(null);
-            }}
-            onDeleteStock={(id) => {
-              updateProduct(id, { stock: deletingProduct.stock - 1 });
-              setDeletingProduct(null);
-            }}
-          />
+        <Modal isOpen onClose={() => setDeletingProduct(null)}>
+          <Suspense fallback={<div className="p-6">Loading...</div>}>
+            <DeleteConfirm
+              product={deletingProduct}
+              onCancel={() => setDeletingProduct(null)}
+              onDeleteProduct={(id) => {
+                deleteProduct(id);
+                setDeletingProduct(null);
+              }}
+              onDeleteStock={(id) => {
+                updateProduct(id, { stock: deletingProduct.stock - 1 });
+                setDeletingProduct(null);
+              }}
+            />
+          </Suspense>
         </Modal>
       )}
     </div>
