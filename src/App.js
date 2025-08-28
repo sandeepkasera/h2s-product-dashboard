@@ -24,8 +24,6 @@ function WrapperView() {
 }
 
 function App() {
-  // ⚠️ remove unused state for now
-  // const [products] = useState(generateMockProducts(1000));
 
   return (
     <div className="App">
