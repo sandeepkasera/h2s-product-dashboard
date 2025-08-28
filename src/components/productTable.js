@@ -114,7 +114,7 @@ export default function ProductTable({
                   onDragStart={() => handleDragStart(index)}
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={() => handleDrop(index)}
-                  className={`px-4 py-2 text-left ${
+                  className={`px-4 py-2 ${
                     col.sortable ? "cursor-pointer" : ""
                   }`}
                   onClick={col.sortable ? () => handleSort(col.key) : undefined}
