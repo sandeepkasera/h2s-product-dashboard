@@ -5,9 +5,7 @@ import { useState } from "react";
 function Layout() {
     const [search, setSearch] = useState("");
   return (
-    <div className="app-container flex">
-      {/* Sidebar can be added here if needed */}
- 
+    <div className="app-container flex"> 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
