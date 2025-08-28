@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { useCart } from "../utils/cartContext";
 import { useNavigate } from "react-router-dom";   // ✅ Import
+import CartSidebar from "./cart";
 
 
 export default function Header({ onSearch, onOpenCart }) {
     const { count } = useCart();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const navigate = useNavigate();
+
+    const [isCartOpen, setIsCartOpen] = useState(false);
+
 
 
     return (
@@ -34,7 +38,7 @@ export default function Header({ onSearch, onOpenCart }) {
                 <div className="flex items-center gap-4">
                     {/* Cart */}
                     <button
-                        onClick={() => navigate("/cart")}
+                        onClick={() => setIsCartOpen(true)}
                         className="relative rounded-xl border px-3 py-2 text-sm hover:bg-gray-50"
                         aria-label="Open cart"
                     >
@@ -85,6 +89,8 @@ export default function Header({ onSearch, onOpenCart }) {
                     />
                 </div>
             )}
+        <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
         </header>
+        
     );
 }

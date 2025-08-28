@@ -8,7 +8,6 @@ import Layout from "./layout";
 // ✅ Match exact filenames
 import Dashboard from "./pages/dashboard";
 import Home from "./pages/home";
-import Cart from "./pages/cart";
 
 function WrapperView() {
   return (
@@ -18,7 +17,6 @@ function WrapperView() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path="cart" element={<Cart />} />
         </Route>
       </Routes>
     </BrowserRouter>
